@@ -9,7 +9,13 @@ Game::Game(const int width, const int height) {
 }
 
 Game::~Game() {
+    SDL_DestroyRenderer(gameRenderer);
+    SDL_DestroyWindow(gameWindow);
+    gameWindow = NULL;
+    gameRenderer = NULL;
 
+    IMG_Quit();
+    SDL_Quit();
 }
 
 bool Game::run() {
@@ -21,8 +27,8 @@ bool Game::run() {
 		quit = true;
 	    }
 	}
-	SDL_FillRect(gameScreenSurface, NULL, 0xFFFFFF);
-	SDL_UpdateWindowSurface(gameWindow);
+	SDL_RenderClear( gameRenderer );
+	SDL_RenderPresent( gameRenderer );
     }
 
     return true;
@@ -40,21 +46,24 @@ void Game::init() {
     gameWindow = SDL_CreateWindow ("game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 				   window_width, window_height, SDL_WINDOW_SHOWN);
     if (gameWindow == NULL) {
-	std::cout << "SDL could not create the window! SDL_Error: " << SDL_GetError() << "\n" << std::endl;
+	std::cout << "SDL could not create the window! SDL_Error: " << SDL_GetError() << std::endl;
 	throw "SDL error";
     }
-    else {
-	gameScreenSurface = SDL_GetWindowSurface (gameWindow);
-    }
 
+    gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED);
+    if (gameRenderer == NULL) {
+	std::cout << "SDL couldn't initialize the game renderer! SDL_Error: "
+		  << SDL_GetError() << std::endl;
+	throw "SDL error";
+    }
+    SDL_SetRenderDrawColor(gameRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    int img_init_status = IMG_Init(IMG_INIT_PNG);
+    if (!img_init_status) {
+	std::cout << "SDL image couldn't be loaded. SDL_Error: "
+		  << IMG_GetError() << std::endl;
+    }
 }
 
 void Game::load_resources() {
-    b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(0.0f, -10.0f);
-    b2Body* groundBody = this->world->CreateBody(&groundBodyDef);
 
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(50.0f, 10.0f);
-    groundBody->CreateFixture(&groundBox, 0.0f);
 }
