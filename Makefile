@@ -6,6 +6,7 @@ FILES = src/*.cpp
 
 all: $(FILES)
 	$(CC) $(TARGET) $(FILES) $(TAGS) $(LIBS)
+	cp -r resources build/
 
 debug: $(FILES)
 	$(CC) $(TARGET) $(FILES) $(TAGS) $(LIBS) -g -O0

@@ -6,12 +6,12 @@
 
 class PhysBody {
  private:
-    SDL_Texture* texture = NULL;
+    const SDL_Texture* texture = NULL;
     b2Body* body = NULL;
  public:
-    PhysBody(SDL_Texture* texture);
+    PhysBody(const SDL_Texture* texture);
     ~PhysBody();
-    SDL_Texture* GetTexture();
+    const SDL_Texture* GetTexture();
     b2Body* GetBody();
 };
 

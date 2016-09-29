@@ -8,7 +8,7 @@ PhysBody::~PhysBody() {
 
 }
 
-SDL_Texture* PhysBody::GetTexture() {
+const SDL_Texture* PhysBody::GetTexture() {
     return texture;
 }
 

@@ -1,9 +1,7 @@
 #include "Game.h"
+#include "TextureUtil.h"
 
-Game::Game(const int width, const int height) {
-    window_width = width;
-    window_height = height;
-
+Game::Game(const int width, const int height): window_width(width), window_height(height) {
     Game::init();
     Game::load_resources();
 }
@@ -28,6 +26,8 @@ bool Game::run() {
 	    }
 	}
 	SDL_RenderClear( gameRenderer );
+	auto tex = textureMap["simple"];
+	SDL_RenderCopy(gameRenderer, tex, NULL, NULL);
 	SDL_RenderPresent( gameRenderer );
     }
 
@@ -65,5 +65,6 @@ void Game::init() {
 }
 
 void Game::load_resources() {
-
+    SDL_Texture* tex = TextureUtil::loadTexture(gameRenderer, "/resources/simple.png");
+    textureMap["simple"] = tex;
 }
