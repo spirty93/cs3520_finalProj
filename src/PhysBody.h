@@ -9,10 +9,12 @@ class PhysBody {
     const SDL_Texture* texture = NULL;
     b2Body* body = NULL;
  public:
-    PhysBody(const SDL_Texture* texture);
+    PhysBody(b2World& world, const SDL_Texture* texture);
     ~PhysBody();
     const SDL_Texture* GetTexture();
     b2Body* GetBody();
+    b2Vec2 GetPosition();
+    float GetAngle();
 };
 
 #endif
