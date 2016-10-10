@@ -12,3 +12,6 @@ debug: $(FILES)
 
 run: all
 	./build/game
+
+doxygen:
+	doxygen doxyconf

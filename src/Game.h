@@ -7,18 +7,21 @@
 #include <SDL2/SDL_image.h>
 #include <map>
 
+#include "Level.h"
+
 class Game {
- private:
+private:
     SDL_Window* gameWindow = NULL;
     SDL_Renderer* gameRenderer = NULL;
     b2World* world;
+    Level* l;
     std::map<std::string, SDL_Texture*> textureMap;
 
     void init();
     void load_resources();
     const int window_width;
     const int window_height;
- public:
+public:
     Game(const int width, const int height);
     ~Game();
     bool run();
