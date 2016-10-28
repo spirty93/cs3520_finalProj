@@ -2,18 +2,22 @@
 #define LEVEL_H
 
 #include <iostream>
+#include <map>
+#include <Box2D/Box2D.h>
 
 #include "GameBody.h"
 #include "Player.h"
 
 class Level {
-private:
-    std::map<std::string, GameBody&> worldObjects;
 public:
+    std::map<std::string, GameBody*> worldObjects;
     Level(std::string level_name);
     ~Level();
 
-    GameBody& getObject(std::string obj_name);
+    GameBody* getObject(const std::string obj_name) const noexcept;
+    void addObject(const std::string obj_name, GameBody* obj) noexcept;
+private:
+    std::string name_ = "";
 };
 
 #endif

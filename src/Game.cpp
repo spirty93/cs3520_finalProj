@@ -1,7 +1,8 @@
 #include "Game.h"
 #include "TextureUtil.h"
 
-Game::Game(const int width, const int height): window_width(width), window_height(height) {
+
+Game::Game(const int width, const int height): window_width(width), window_height(height), l(Level("Test")) {
     Game::init();
     Game::load_resources();
 }
@@ -14,6 +15,7 @@ Game::~Game() {
 
     IMG_Quit();
     SDL_Quit();
+
 }
 
 bool Game::run() {
@@ -27,7 +29,21 @@ bool Game::run() {
 	}
 	SDL_RenderClear( gameRenderer );
 	auto tex = textureMap["simple"];
-	SDL_RenderCopy(gameRenderer, tex, NULL, NULL);
+	SDL_Rect r;
+	r.x = 20;
+	r.y = 20;
+	r.w = 52;
+	r.h = 52;
+	SDL_RenderCopy(gameRenderer, tex, NULL, &r);
+	for (auto iterator = l.worldObjects.begin(); iterator != l.worldObjects.end(); iterator++) {
+	    GameBody* g = iterator->second;
+	    const SDL_Rect pos = g->GetPosRect();
+	    //const SDL_Rect dim = g->GetTexRect();
+	    SDL_RenderCopy(gameRenderer,
+			   textureMap["simple"],
+			   NULL,
+			   &pos);
+	}
 	SDL_RenderPresent( gameRenderer );
     }
 
@@ -67,4 +83,7 @@ void Game::init() {
 void Game::load_resources() {
     SDL_Texture* tex = TextureUtil::loadTexture(gameRenderer, "/resources/simple.png");
     textureMap["simple"] = tex;
+
+    GameBody* g = new GameBody(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32));
+    l.addObject("box", g);
 }

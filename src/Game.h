@@ -6,6 +6,7 @@
 #include <Box2D/Box2D.h>
 #include <SDL2/SDL_image.h>
 #include <map>
+#include <algorithm>
 
 #include "Level.h"
 
@@ -14,7 +15,7 @@ private:
     SDL_Window* gameWindow = NULL;
     SDL_Renderer* gameRenderer = NULL;
     b2World* world;
-    Level* l;
+    Level l;
     std::map<std::string, SDL_Texture*> textureMap;
 
     void init();
