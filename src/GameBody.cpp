@@ -4,7 +4,7 @@ GameBody::GameBody(b2World* world, const std::string texture, b2Vec2 pos, b2Vec2
 		   float density, float friction, float restitution): texture_(texture), width_(dim.x), height_(dim.y) {
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position = pos;
+    bodyDef.position.Set(pos.x + width_ / 2, pos.y + height_ / 2);
     bodyDef.angle = 0;
 
     b2Body* myBody = world->CreateBody(&bodyDef);
@@ -14,7 +14,9 @@ GameBody::GameBody(b2World* world, const std::string texture, b2Vec2 pos, b2Vec2
 
     b2FixtureDef boxFixtureDef;
     boxFixtureDef.shape = &boxShape;
-    boxFixtureDef.density = 1;
+    boxFixtureDef.density = density;
+    boxFixtureDef.friction = friction;
+    boxFixtureDef.restitution = restitution;
     myBody->CreateFixture(&boxFixtureDef);
     body_ = myBody;
 
@@ -68,10 +70,10 @@ SDL_Rect GameBody::GetPosRect() const noexcept {
 
     const b2Vec2& pos = body_->GetPosition();
 
-    rect.x = pos.x - width_ / 2;
-    rect.y = pos.y - height_ / 2;
-    rect.w = pos.x + width_ / 2;
-    rect.h = pos.y + height_ / 2;
+    rect.x = pos.x - (width_ / 2);
+    rect.y = pos.y - (height_ / 2);
+    rect.w = width_;
+    rect.h = height_;
 
     return rect;
 }

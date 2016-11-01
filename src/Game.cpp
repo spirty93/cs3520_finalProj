@@ -21,37 +21,37 @@ Game::~Game() {
 bool Game::run() {
     bool quit = false;
     SDL_Event e;
+
+    float32 timeStep = 1 / 20.0f;   // the length of time passed to simulate (seconds)
+    int32 velocityIterations = 8;   // how strongly to correct velocity
+    int32 positionIterations = 3;   // how strongly to correct position
+
     while (!quit) {
 	while (SDL_PollEvent (&e) != 0) {
 	    if (e.type == SDL_QUIT) {
 		quit = true;
 	    }
 	}
+
+	world->Step( timeStep, velocityIterations, positionIterations);
 	SDL_RenderClear( gameRenderer );
-	auto tex = textureMap["simple"];
-	SDL_Rect r;
-	r.x = 20;
-	r.y = 20;
-	r.w = 52;
-	r.h = 52;
-	SDL_RenderCopy(gameRenderer, tex, NULL, &r);
 	for (auto iterator = l.worldObjects.begin(); iterator != l.worldObjects.end(); iterator++) {
 	    GameBody* g = iterator->second;
 	    const SDL_Rect pos = g->GetPosRect();
-	    //const SDL_Rect dim = g->GetTexRect();
+	    const SDL_Rect dim = g->GetTexRect();
 	    SDL_RenderCopy(gameRenderer,
-			   textureMap["simple"],
-			   NULL,
+			   textureMap[g->GetTexture()],
+			   &dim,
 			   &pos);
 	}
-	SDL_RenderPresent( gameRenderer );
+	SDL_RenderPresent(gameRenderer);
     }
 
     return true;
 }
 
 void Game::init() {
-    b2Vec2 gravity(0.0f, 10.0f);
+    b2Vec2 gravity(0.0f, 9.8f);
     world = new b2World(gravity);
 
     if (SDL_Init (SDL_INIT_VIDEO) < 0) {
@@ -84,6 +84,8 @@ void Game::load_resources() {
     SDL_Texture* tex = TextureUtil::loadTexture(gameRenderer, "/resources/simple.png");
     textureMap["simple"] = tex;
 
-    GameBody* g = new GameBody(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32));
+    GameBody* g = new GameBody(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32), 1, 0.3, 1.0);
     l.addObject("box", g);
+    g = new GameBody(world, "simple", b2Vec2(0, 250), b2Vec2(250, 32));
+    l.addObject("box2", g);
 }
