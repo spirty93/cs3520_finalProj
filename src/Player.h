@@ -10,7 +10,7 @@
 
 class Player :public Character {
 public:
-    Player(b2World& world, const SDL_Texture* texture, b2Vec2 pos, b2Vec2 dim,
+    Player(b2World* world, const std::string texture, b2Vec2 pos, b2Vec2 dim,
 	   float density, float friction, float restitution, int hp, int base_vel);
     ~Player();
 
@@ -20,6 +20,8 @@ public:
     void Jump(Dir dir);
     // Perform attack
     void Attack();
+    // Process the event
+    void processEvent(SDL_Event& e);
 };
 
 #endif

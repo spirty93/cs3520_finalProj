@@ -16,8 +16,11 @@ public:
 
     GameBody* getObject(const std::string obj_name) const noexcept;
     void addObject(const std::string obj_name, GameBody* obj) noexcept;
+    Player* getPlayerObj();
+    void setPlayerObj(Player* player) noexcept;
 private:
     std::string name_ = "";
+    Player* player_ = nullptr;
 };
 
 #endif
