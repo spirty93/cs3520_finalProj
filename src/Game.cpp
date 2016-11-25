@@ -47,6 +47,14 @@ bool Game::run() {
 			   &dim,
 			   &pos);
 	}
+
+	GameBody* g = l.getPlayerObj();
+	const SDL_Rect pos = g->GetPosRect();
+	const SDL_Rect dim = g->GetTexRect();
+	SDL_RenderCopy(gameRenderer,
+		       textureMap[g->GetTexture()],
+		       &dim,
+		       &pos);
 	SDL_RenderPresent(gameRenderer);
     }
 
@@ -86,8 +94,10 @@ void Game::init() {
 void Game::load_resources() {
     SDL_Texture* tex = TextureUtil::loadTexture(gameRenderer, "/resources/simple.png");
     textureMap["simple"] = tex;
+    tex = TextureUtil::loadTexture(gameRenderer, "/resources/player.png");
+    textureMap["player"] = tex;
 
-    l.setPlayerObj(new Player(world, "player", b2Vec2(60, 20), b2Vec2(32, 32), 1, 0.3, 1.0, 100, 5));
+    l.setPlayerObj(new Player(world, "player", b2Vec2(60, 20), b2Vec2(32, 32), 1, 0.3, 0.0, 100, 5));
 
     GameBody* g = new GameBody(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32), 1, 0.3, 1.0);
     l.addObject("box", g);
