@@ -25,6 +25,10 @@ bool Game::run() {
     int32 velocityIterations = 8;   // how strongly to correct velocity
     int32 positionIterations = 3;   // how strongly to correct position
 
+    SDL_Rect camera;
+    camera.w = window_width;
+    camera.h = window_height;
+
     while (!quit) {
 	while (SDL_PollEvent (&e) != 0) {
 	    if (e.type == SDL_QUIT) {
@@ -36,22 +40,21 @@ bool Game::run() {
 	}
 
 	// Update the viewport so that the player object is always in the middle
-	SDL_Rect view;
 	{
 	    const b2Vec2 pos = l.getPlayerObj()->GetBody()->GetPosition();
-	    view.x = (pos.x + (window_width / 2)) * -1 + window_width ;
-	    view.y = (pos.y + (window_height / 2)) * -1 + window_height;
-	    view.w = window_width;
-	    view.h = window_height;
+	    camera.x = (pos.x + (window_width / 2)) * -1 + window_width ;
+	    camera.y = (pos.y + (window_height / 2)) * -1 + window_height;
 	}
-	SDL_RenderSetViewport(gameRenderer, &view);
+	//SDL_RenderSetViewport(gameRenderer, &camera);
 
 	world->Step( timeStep, velocityIterations, positionIterations);
 	SDL_RenderClear( gameRenderer );
 	for (auto iterator = l.worldObjects.begin(); iterator != l.worldObjects.end(); iterator++) {
 	    GameBody* g = iterator->second;
-	    const SDL_Rect pos = g->GetPosRect();
+	    SDL_Rect pos = g->GetPosRect();
 	    const SDL_Rect dim = g->GetTexRect();
+	    pos.x += camera.x;
+	    pos.y += camera.y;
 	    SDL_RenderCopy(gameRenderer,
 			   textureMap[g->GetTexture()],
 			   &dim,
@@ -59,8 +62,10 @@ bool Game::run() {
 	}
 
 	GameBody* g = l.getPlayerObj();
-	const SDL_Rect pos = g->GetPosRect();
+	SDL_Rect pos = g->GetPosRect();
 	const SDL_Rect dim = g->GetTexRect();
+	pos.x += camera.x;
+	pos.y += camera.y;
 
 
 	SDL_RenderCopy(gameRenderer,
@@ -121,4 +126,13 @@ void Game::load_resources() {
 
     g = new GameBody(world, "simple", b2Vec2(350, 150), b2Vec2(250, 32));
     l.addObject("box4", g);
+
+    g = new GameBody(world, "simple", b2Vec2(450, 250), b2Vec2(250, 32));
+    l.addObject("box5", g);
+
+    g = new GameBody(world, "simple", b2Vec2(600, 250), b2Vec2(250, 32));
+    l.addObject("box6", g);
+
+    g = new GameBody(world, "simple", b2Vec2(600, 20), b2Vec2(32, 32), 1, 0.3, 1.0);
+    l.addObject("jumpy", g);
 }
