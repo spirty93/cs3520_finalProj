@@ -22,3 +22,8 @@ Player* Level::getPlayerObj() {
 void Level::setPlayerObj(Player* player) noexcept {
     player_ = player;
 }
+
+void Level::reset() noexcept {
+    player_ = nullptr;
+    worldObjects.clear();
+}

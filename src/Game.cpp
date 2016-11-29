@@ -35,7 +35,13 @@ bool Game::run() {
 		quit = true;
 	    }
 	    if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
-		l.getPlayerObj()->processEvent(e);
+		if (e.key.keysym.sym == 'r') {
+		    l.reset();
+		    load_resources();
+		    continue;
+		} else {
+		    l.getPlayerObj()->processEvent(e);
+		}
 	    }
 	}
 
@@ -45,7 +51,6 @@ bool Game::run() {
 	    camera.x = (pos.x + (window_width / 2)) * -1 + window_width ;
 	    camera.y = (pos.y + (window_height / 2)) * -1 + window_height;
 	}
-	//SDL_RenderSetViewport(gameRenderer, &camera);
 
 	world->Step( timeStep, velocityIterations, positionIterations);
 	SDL_RenderClear( gameRenderer );
@@ -67,7 +72,6 @@ bool Game::run() {
 	pos.x += camera.x;
 	pos.y += camera.y;
 
-
 	SDL_RenderCopy(gameRenderer,
 		       textureMap[g->GetTexture()],
 		       &dim,
@@ -79,8 +83,8 @@ bool Game::run() {
 }
 
 void Game::init() {
-    b2Vec2 gravity(0.0f, 9.8f);
-    world = new b2World(gravity);
+
+
 
     if (SDL_Init (SDL_INIT_VIDEO) < 0) {
 	std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n" << std::endl;
@@ -109,6 +113,9 @@ void Game::init() {
 }
 
 void Game::load_resources() {
+    b2Vec2 gravity(0.0f, 9.8f);
+    world = new b2World(gravity);
+
     SDL_Texture* tex = TextureUtil::loadTexture(gameRenderer, "/resources/simple.png");
     textureMap["simple"] = tex;
     tex = TextureUtil::loadTexture(gameRenderer, "/resources/player.png");
