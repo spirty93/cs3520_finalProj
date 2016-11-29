@@ -15,7 +15,6 @@ Game::~Game() {
 
     IMG_Quit();
     SDL_Quit();
-
 }
 
 bool Game::run() {
@@ -36,6 +35,17 @@ bool Game::run() {
 	    }
 	}
 
+	// Update the viewport so that the player object is always in the middle
+	SDL_Rect view;
+	{
+	    const b2Vec2 pos = l.getPlayerObj()->GetBody()->GetPosition();
+	    view.x = (pos.x + (window_width / 2)) * -1 + window_width ;
+	    view.y = (pos.y + (window_height / 2)) * -1 + window_height;
+	    view.w = window_width;
+	    view.h = window_height;
+	}
+	SDL_RenderSetViewport(gameRenderer, &view);
+
 	world->Step( timeStep, velocityIterations, positionIterations);
 	SDL_RenderClear( gameRenderer );
 	for (auto iterator = l.worldObjects.begin(); iterator != l.worldObjects.end(); iterator++) {
@@ -51,6 +61,8 @@ bool Game::run() {
 	GameBody* g = l.getPlayerObj();
 	const SDL_Rect pos = g->GetPosRect();
 	const SDL_Rect dim = g->GetTexRect();
+
+
 	SDL_RenderCopy(gameRenderer,
 		       textureMap[g->GetTexture()],
 		       &dim,
@@ -97,10 +109,16 @@ void Game::load_resources() {
     tex = TextureUtil::loadTexture(gameRenderer, "/resources/player.png");
     textureMap["player"] = tex;
 
-    l.setPlayerObj(new Player(world, "player", b2Vec2(60, 20), b2Vec2(32, 32), 1, 0.3, 0.0, 100, 5));
+    l.setPlayerObj(new Player(world, "player", b2Vec2(60, 20), b2Vec2(32, 32), 1, 0.0, 0, 100, 5));
 
     GameBody* g = new GameBody(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32), 1, 0.3, 1.0);
     l.addObject("box", g);
     g = new GameBody(world, "simple", b2Vec2(0, 250), b2Vec2(250, 32));
     l.addObject("box2", g);
+
+    g = new GameBody(world, "simple", b2Vec2(300, 250), b2Vec2(250, 32));
+    l.addObject("box3", g);
+
+    g = new GameBody(world, "simple", b2Vec2(350, 150), b2Vec2(250, 32));
+    l.addObject("box4", g);
 }

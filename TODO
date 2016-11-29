@@ -1,4 +1,4 @@
-1. Jumps - Pavel
+1. Jumps - Pavel - Done (Except handle the jump in mid-air)
 2. Automatically load images - Bohdi
 3. Load levels from file: - Bohdi
    - Load objects
@@ -6,7 +6,7 @@
    - Load oredering (maybe)
    - Player position
 4. Implement enemies and shooting - Pavel
-5. Scroolling when walking - Pavel
+5. Scroolling when walking - Pavel - Done
 6. Highscores level - Bohdi
 7. Portal objects - Pavel
 8. Collisions with different objects - Pavel

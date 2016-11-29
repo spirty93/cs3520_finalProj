@@ -21,18 +21,26 @@ void Player::Attack() {
 
 void Player::processEvent(SDL_Event& e) {
     if (e.type == SDL_KEYDOWN) {
+	b2Vec2 vel =this->GetBody()->GetLinearVelocity();
 	switch (e.key.keysym.sym) {
 	case SDLK_RIGHT:
-	    this->GetBody()->SetLinearVelocity(b2Vec2(base_vel_, 0));
+	    vel.x = 2 * base_vel_;
+	    this->GetBody()->SetLinearVelocity(vel);
 	    break;
 	case SDLK_LEFT:
-	    this->GetBody()->SetLinearVelocity(b2Vec2(-base_vel_, 0));
+	    vel.x = 2 * -base_vel_;
+	    this->GetBody()->SetLinearVelocity(vel);
+	    break;
+	case SDLK_UP:
+	    vel.y = -50;
+	    this->GetBody()->SetLinearVelocity(vel);
 	    break;
 	}
     }
 
     if (e.type == SDL_KEYUP) {
 	b2Vec2 vel =this->GetBody()->GetLinearVelocity();
-	this->GetBody()->SetLinearVelocity(b2Vec2(0, vel.y));
+	vel.x = 0;
+	this->GetBody()->SetLinearVelocity(vel);
     }
 }
