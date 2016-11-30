@@ -1,5 +1,7 @@
 #include "Game.h"
 #include "TextureUtil.h"
+#include "tinydir.h"
+#include <string>
 
 
 Game::Game(const int width, const int height): window_width(width), window_height(height), l(Level("Test")) {
@@ -116,10 +118,22 @@ void Game::load_resources() {
     b2Vec2 gravity(0.0f, 9.8f);
     world = new b2World(gravity);
 
-    SDL_Texture* tex = TextureUtil::loadTexture(gameRenderer, "/resources/simple.png");
-    textureMap["simple"] = tex;
-    tex = TextureUtil::loadTexture(gameRenderer, "/resources/player.png");
-    textureMap["player"] = tex;
+	tinydir_dir dir;
+	tinydir_open(&dir, "resources/");
+	while (dir.has_next)
+	{
+		tinydir_file file;
+		if ((tinydir_readfile(&dir, &file) == -1) || (tinydir_next(&dir) == -1))
+		{
+			std::cout << "Error getting file" << std::endl;
+		}
+		if (!file.is_dir)
+		{
+			SDL_Texture* tex = TextureUtil::loadTexture(gameRenderer, "resources/"+std::string(file.name));
+			textureMap[std::string(file.name).substr(0, std::string(file.name).size() - 4)] = tex;
+			std::cout << file.name << std::endl;
+		}
+	}
 
     l.setPlayerObj(new Player(world, "player", b2Vec2(60, 20), b2Vec2(32, 32), 1, 0.0, 0, 100, 5));
 
