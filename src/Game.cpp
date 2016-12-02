@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "TextureUtil.h"
+#include "ContactListener.h"
 
 
 Game::Game(const int width, const int height): window_width(width), window_height(height), l(Level("Test")) {
@@ -115,6 +116,8 @@ void Game::init() {
 void Game::load_resources() {
     b2Vec2 gravity(0.0f, 9.8f);
     world = new b2World(gravity);
+    ContactListener* contactListener = new ContactListener();
+    world->SetContactListener(contactListener);
 
     SDL_Texture* tex = TextureUtil::loadTexture(gameRenderer, "/resources/simple.png");
     textureMap["simple"] = tex;
