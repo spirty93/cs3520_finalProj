@@ -25,6 +25,10 @@ public:
     SDL_Rect GetTexRect() const noexcept;
 
     SDL_Rect GetPosRect() const noexcept;
+
+    virtual std::string GetType();
+
+    virtual void HandleCollision(std::string other);
 private:
     std::string texture_;
     b2Body* body_ = NULL;

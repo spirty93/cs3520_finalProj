@@ -10,3 +10,7 @@ Character::~Character() {}
 Dir Character::GetDir() {
     return dir_;
 }
+
+std::string Character::GetType() {
+    return "character";
+}

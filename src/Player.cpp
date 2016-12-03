@@ -44,3 +44,15 @@ void Player::processEvent(SDL_Event& e) {
 	this->GetBody()->SetLinearVelocity(vel);
     }
 }
+
+std::string Player::GetType() {
+    return "player";
+}
+
+void Player::HandleCollision(std::string other) {
+    if (other == "object") return;
+    std::cout << "Collinding with " << other << std::endl;
+    if (other == "enemy") {
+	std::cout << "Enemy hit. About to die" << std::endl;
+    }
+}

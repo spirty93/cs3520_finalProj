@@ -19,7 +19,7 @@ GameBody::GameBody(b2World* world, const std::string texture, b2Vec2 pos, b2Vec2
     boxFixtureDef.restitution = restitution;
     myBody->CreateFixture(&boxFixtureDef);
     body_ = myBody;
-
+    body_->SetUserData(this);
 }
 
 GameBody::GameBody(b2World* world, const std::string texture, b2Vec2 pos,
@@ -40,6 +40,7 @@ GameBody::GameBody(b2World* world, const std::string texture, b2Vec2 pos,
 
     myBody->CreateFixture(&boxFixtureDef);
     body_ = myBody;
+    body_->SetUserData(this);
 }
 
 GameBody::~GameBody() {
@@ -76,4 +77,12 @@ SDL_Rect GameBody::GetPosRect() const noexcept {
     rect.h = height_;
 
     return rect;
+}
+
+std::string GameBody::GetType() {
+    return "object";
+}
+
+void GameBody::HandleCollision(std::string other) {
+
 }

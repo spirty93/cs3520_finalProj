@@ -1,16 +1,30 @@
 #include "ContactListener.h"
+#include "GameBody.h"
 
 void ContactListener::BeginContact(b2Contact* contact) {
-    void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
+    void* bodyAUserData = contact->GetFixtureA()->GetBody()->GetUserData();
+    void* bodyBUserData = contact->GetFixtureB()->GetBody()->GetUserData();
+    if (bodyAUserData && bodyBUserData) {
+	GameBody* a = static_cast<GameBody*>(bodyAUserData);
+	GameBody* b = static_cast<GameBody*>(bodyBUserData);
 
-    //check if fixture B was a ball
-    bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
+	const std::string typeA = a->GetType();
+	const std::string typeB = b->GetType();
+
+	std::cout << typeA << " " << typeB << std::endl;
+
+	a->HandleCollision(typeB);
+	b->HandleCollision(typeA);
+    }
+
+    if (bodyBUserData) {
+    }
+
 }
 
 void ContactListener::EndContact(b2Contact* contact) {
     //check if fixture A was a ball
-    void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
+    void* bodyAUserData = contact->GetFixtureA()->GetBody()->GetUserData();
+    void* bodyBUserData = contact->GetFixtureB()->GetBody()->GetUserData();
 
-    //check if fixture B was a ball
-    bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
 }

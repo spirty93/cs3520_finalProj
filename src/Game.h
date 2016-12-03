@@ -22,6 +22,7 @@ private:
     void load_resources();
     const int window_width;
     const int window_height;
+    bool resources_loaded_ = false;
 public:
     Game(const int width, const int height);
     ~Game();

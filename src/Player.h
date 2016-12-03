@@ -22,6 +22,8 @@ public:
     void Attack();
     // Process the event
     void processEvent(SDL_Event& e);
+    std::string GetType();
+    void HandleCollision(std::string type);
 };
 
 #endif

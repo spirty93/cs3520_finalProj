@@ -21,6 +21,7 @@ public:
     Dir GetDir();
     // Perform attack
     virtual void Attack() = 0;
+    virtual std::string GetType();
 protected:
     Dir dir_ = Dir::RIGHT;
     int hp_;
