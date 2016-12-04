@@ -5,6 +5,7 @@
 #include "ContactListener.h"
 #include "tinydir.h"
 #include "Enemy.h"
+#include "Portal.h"
 
 
 
@@ -50,6 +51,14 @@ bool Game::run() {
 		    l.getPlayerObj()->processEvent(e);
 		}
 	    }
+	}
+
+	if (level_to_ != "") {
+	    l.reset();
+	    load_resources();
+	    l.go();
+	    level_to_ = "";
+	    continue;
 	}
 
 	// Update the viewport so that the player object is always in the middle
@@ -175,15 +184,10 @@ void Game::load_resources() {
     g = new GameBody(world, "simple", b2Vec2(0, 250), b2Vec2(250, 32));
     l.addObject("box2", g);
 
-    g = new GameBody(world, "simple", b2Vec2(300, 250), b2Vec2(250, 32));
-    l.addObject("box3", g);
-
-    g = new GameBody(world, "simple", b2Vec2(350, 150), b2Vec2(250, 32));
-    l.addObject("box4", g);
-
-    g = new GameBody(world, "simple", b2Vec2(450, 250), b2Vec2(250, 32));
-    l.addObject("box5", g);
-
-    g = new GameBody(world, "simple", b2Vec2(600, 250), b2Vec2(250, 32));
-    l.addObject("box6", g);
+    g = new Portal(world, "portal", b2Vec2(110, 100), b2Vec2(32, 32), this, "Level2");
+    l.addObject("portal", g);
 }
+
+ bool Game::triggerLoadLevel(std::string to) {
+     level_to_ = to;
+ }

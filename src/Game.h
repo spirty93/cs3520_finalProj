@@ -11,11 +11,17 @@
 #include "Level.h"
 
 class Game {
+public:
+    Game(const int width, const int height);
+    ~Game();
+    bool run();
+    bool triggerLoadLevel(std::string to);
 private:
     SDL_Window* gameWindow = NULL;
     SDL_Renderer* gameRenderer = NULL;
-    b2World* world;
     Level l;
+    b2World* world;
+
     std::map<std::string, SDL_Texture*> textureMap;
 
     void init();
@@ -23,10 +29,7 @@ private:
     const int window_width;
     const int window_height;
     bool resources_loaded_ = false;
-public:
-    Game(const int width, const int height);
-    ~Game();
-    bool run();
+    std::string level_to_ = "";
 };
 
 #endif
