@@ -11,8 +11,6 @@ void ContactListener::BeginContact(b2Contact* contact) {
 	const std::string typeA = a->GetType();
 	const std::string typeB = b->GetType();
 
-	std::cout << typeA << " " << typeB << std::endl;
-
 	a->HandleCollision(typeB);
 	b->HandleCollision(typeA);
     }

@@ -34,7 +34,7 @@ bool Game::run() {
     SDL_Rect camera;
     camera.w = window_width;
     camera.h = window_height;
-
+    l.go();
     while (!quit) {
 	while (SDL_PollEvent (&e) != 0) {
 	    if (e.type == SDL_QUIT) {
@@ -44,6 +44,7 @@ bool Game::run() {
 		if (e.key.keysym.sym == 'r') {
 		    l.reset();
 		    load_resources();
+		    l.go();
 		    continue;
 		} else {
 		    l.getPlayerObj()->processEvent(e);
@@ -58,10 +59,18 @@ bool Game::run() {
 	    camera.y = (pos.y + (window_height / 2)) * -1 + window_height;
 	}
 
-	world->Step( timeStep, velocityIterations, positionIterations);
+	if (l.isRunning()) {
+	    world->Step( timeStep, velocityIterations, positionIterations);
+	}
 	SDL_RenderClear( gameRenderer );
 	for (auto iterator = l.worldObjects.begin(); iterator != l.worldObjects.end(); iterator++) {
 	    GameBody* g = iterator->second;
+	    if (g->isDead()) {
+		bool to_remove = g->Die();
+		if (to_remove) {
+		    // remove the body from the set
+		}
+	    }
 	    SDL_Rect pos = g->GetPosRect();
 	    const SDL_Rect dim = g->GetTexRect();
 	    pos.x += camera.x;
@@ -73,8 +82,20 @@ bool Game::run() {
 	}
 
 	GameBody* g = l.getPlayerObj();
+	if (g->isDead()) {
+	    bool to_remove = g->Die();
+	    if (to_remove) {
+		l.pause();
+	    }
+	}
 	SDL_Rect pos = g->GetPosRect();
 	const SDL_Rect dim = g->GetTexRect();
+
+	if (pos.y > 1000) {
+	    g->Die();
+	    continue;
+	}
+
 	pos.x += camera.x;
 	pos.y += camera.y;
 
@@ -145,10 +166,12 @@ void Game::load_resources() {
 	resources_loaded_ = true;
     }
 
-    l.setPlayerObj(new Player(world, "player", b2Vec2(60, 20), b2Vec2(32, 32), 1, 0.0, 0, 100, 5));
+    l.setPlayerObj(new Player(world, "player", b2Vec2(60, 20), b2Vec2(32, 32), 1, 0.0, 0, 3, 5));
 
-    GameBody* g = new GameBody(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32), 1, 0.3, 1.0);
+    GameBody* g;
+    g = new Enemy(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32), 1, 0.3, 0.0, 100, 5);
     l.addObject("box", g);
+
     g = new GameBody(world, "simple", b2Vec2(0, 250), b2Vec2(250, 32));
     l.addObject("box2", g);
 
@@ -163,7 +186,4 @@ void Game::load_resources() {
 
     g = new GameBody(world, "simple", b2Vec2(600, 250), b2Vec2(250, 32));
     l.addObject("box6", g);
-
-    g = new Enemy(world, "simple", b2Vec2(600, 20), b2Vec2(32, 32), 1, 0.3, 1.0, 100, 5);
-    l.addObject("jumpy", g);
 }

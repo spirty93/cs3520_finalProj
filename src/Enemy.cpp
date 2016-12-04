@@ -23,9 +23,4 @@ std::string Enemy::GetType() {
 }
 
 void Enemy::HandleCollision(std::string other) {
-    if (other == "object") return;
-    std::cout << "Collinding with " << other << std::endl;
-    if (other == "player") {
-	std::cout << "Enemy hit. About to die" << std::endl;
-    }
 }

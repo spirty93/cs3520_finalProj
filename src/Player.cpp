@@ -2,7 +2,7 @@
 
 Player::Player(b2World* world, const std::string texture, b2Vec2 pos, b2Vec2 dim,
        float density, float friction, float restitution, int hp, int base_vel) :
-    Character(world, texture, pos, dim, density, friction, restitution, hp, base_vel) {
+    Character(world, texture, pos, dim, density, friction, restitution, hp, base_vel), base_pos_(pos) {
 }
 
 Player::~Player() {};
@@ -50,9 +50,17 @@ std::string Player::GetType() {
 }
 
 void Player::HandleCollision(std::string other) {
-    if (other == "object") return;
-    std::cout << "Collinding with " << other << std::endl;
     if (other == "enemy") {
 	std::cout << "Enemy hit. About to die" << std::endl;
+	dead_ = true;
     }
+}
+
+bool Player::Die() noexcept {
+    hp_ -= 1;
+    if (hp_ <= 0) {
+	return true;
+    }
+    dead_ = false;
+    this->GetBody()->SetTransform(base_pos_, 0);
 }

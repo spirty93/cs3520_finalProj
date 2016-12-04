@@ -19,9 +19,13 @@ public:
     Player* getPlayerObj();
     void setPlayerObj(Player* player) noexcept;
     void reset() noexcept;
+    void go() noexcept;
+    void pause() noexcept;
+    bool isRunning() noexcept;
 private:
     std::string name_ = "";
     Player* player_ = nullptr;
+    bool running_ = false;
 };
 
 #endif

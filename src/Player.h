@@ -24,6 +24,9 @@ public:
     void processEvent(SDL_Event& e);
     std::string GetType();
     void HandleCollision(std::string type);
+    bool Die() noexcept;
+private:
+    const b2Vec2 base_pos_;
 };
 
 #endif

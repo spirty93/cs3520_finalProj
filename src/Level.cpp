@@ -27,3 +27,15 @@ void Level::reset() noexcept {
     player_ = nullptr;
     worldObjects.clear();
 }
+
+void Level::go() noexcept {
+    running_ = true;
+}
+
+void Level::pause() noexcept {
+    running_ = false;
+}
+
+bool Level::isRunning() noexcept {
+    return running_;
+}

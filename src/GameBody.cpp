@@ -86,3 +86,11 @@ std::string GameBody::GetType() {
 void GameBody::HandleCollision(std::string other) {
 
 }
+
+const bool GameBody::isDead() const noexcept {
+    return dead_;
+}
+
+bool GameBody::Die() noexcept {
+
+}
