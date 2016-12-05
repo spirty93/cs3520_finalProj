@@ -17,3 +17,12 @@ SDL_Texture* TextureUtil::loadTexture(SDL_Renderer* gameRenderer, const std::str
 
     return tex;
 }
+
+SDL_Texture* TextureUtil::createTextTexture(SDL_Renderer* gameRenderer, const std::string text, const int size) {
+    TTF_Font* Sans = TTF_OpenFont("Sans.ttf", size);
+    SDL_Color Black = {0, 0, 0, 0};
+    SDL_Surface* messageSurface = TTF_RenderText_Solid(Sans, text.c_str(), Black);
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(gameRenderer, messageSurface);
+    SDL_FreeSurface(messageSurface);
+    return textTexture;
+}

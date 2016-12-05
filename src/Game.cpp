@@ -90,6 +90,16 @@ bool Game::run() {
 			   &pos);
 	}
 
+	// for (auto iterator = l.texts.begin(); iterator != l.texts.end(); iterator++) {
+
+	//     SDL_Rect pos;
+	//     pos.w = 60;
+	//     pos.h = 24;
+	//     pos.x = std::get<1>(*iterator).x;
+	//     pos.y = std::get<1>(*iterator).y;
+	//     SDL_RenderCopy(gameRenderer, std::get<0>(*iterator), NULL, &pos);
+	// }
+
 	GameBody* g = l.getPlayerObj();
 	if (g->isDead()) {
 	    bool to_remove = g->Die();
@@ -186,6 +196,11 @@ void Game::load_resources() {
 
     g = new Portal(world, "portal", b2Vec2(110, 100), b2Vec2(32, 32), this, "Level2");
     l.addObject("portal", g);
+
+    SDL_Texture* tex = TextureUtil::createTextTexture(gameRenderer, "Hello", 24);
+    b2Vec2 pos = {20, 20};
+    l.texts.push_back(std::make_tuple(tex, pos));
+
 }
 
  bool Game::triggerLoadLevel(std::string to) {
