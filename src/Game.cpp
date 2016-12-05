@@ -9,7 +9,7 @@
 
 
 
-Game::Game(const int width, const int height): window_width(width), window_height(height), l(Level("Test")) {
+Game::Game(const int width, const int height): window_width_(width), window_height_(height), l(Level("Test")) {
     Game::init();
     Game::load_resources();
 }
@@ -33,27 +33,27 @@ bool Game::run() {
     int32 positionIterations = 3;   // how strongly to correct position
 
     SDL_Rect camera;
-    camera.w = window_width;
-    camera.h = window_height;
+    camera.w = window_width_;
+    camera.h = window_height_;
     l.go();
     while (!quit) {
-	while (SDL_PollEvent (&e) != 0) {
-	    if (e.type == SDL_QUIT) {
-		quit = true;
+	while (SDL_PollEvent (&e) != 0) { // process events
+	    if (e.type == SDL_QUIT) { // the exit event
+		quit = true; // break out of the loop
 	    }
-	    if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) {
-		if (e.key.keysym.sym == 'r') {
+	    if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP) { // process key presses
+		if (e.key.keysym.sym == 'r') { // reset the level
 		    l.reset();
 		    load_resources();
 		    l.go();
 		    continue;
-		} else {
+		} else { // all other events considered to be level specific
 		    l.getPlayerObj()->processEvent(e);
 		}
 	    }
 	}
 
-	if (level_to_ != "") {
+	if (level_to_ != "") { // change level event
 	    l.reset();
 	    load_resources();
 	    l.go();
@@ -64,20 +64,20 @@ bool Game::run() {
 	// Update the viewport so that the player object is always in the middle
 	{
 	    const b2Vec2 pos = l.getPlayerObj()->GetBody()->GetPosition();
-	    camera.x = (pos.x + (window_width / 2)) * -1 + window_width ;
-	    camera.y = (pos.y + (window_height / 2)) * -1 + window_height;
+	    camera.x = (pos.x + (window_width_ / 2)) * -1 + window_width_ ;
+	    camera.y = (pos.y + (window_height_ / 2)) * -1 + window_height_;
 	}
 
-	if (l.isRunning()) {
+	if (l.isRunning()) { // progress the box2d state of the world
 	    world->Step( timeStep, velocityIterations, positionIterations);
 	}
-	SDL_RenderClear( gameRenderer );
+	SDL_RenderClear( gameRenderer ); // render the new state for all objects
 	for (auto iterator = l.worldObjects.begin(); iterator != l.worldObjects.end(); iterator++) {
 	    GameBody* g = iterator->second;
 	    if (g->isDead()) {
 		bool to_remove = g->Die();
 		if (to_remove) {
-		    // remove the body from the set
+		    // the thing is dead. kill it. remove the body from the set
 		}
 	    }
 	    SDL_Rect pos = g->GetPosRect();
@@ -90,17 +90,7 @@ bool Game::run() {
 			   &pos);
 	}
 
-	// for (auto iterator = l.texts.begin(); iterator != l.texts.end(); iterator++) {
-
-	//     SDL_Rect pos;
-	//     pos.w = 60;
-	//     pos.h = 24;
-	//     pos.x = std::get<1>(*iterator).x;
-	//     pos.y = std::get<1>(*iterator).y;
-	//     SDL_RenderCopy(gameRenderer, std::get<0>(*iterator), NULL, &pos);
-	// }
-
-	GameBody* g = l.getPlayerObj();
+	GameBody* g = l.getPlayerObj(); // draw the player last
 	if (g->isDead()) {
 	    bool to_remove = g->Die();
 	    if (to_remove) {
@@ -115,6 +105,7 @@ bool Game::run() {
 	    continue;
 	}
 
+	// update the camera
 	pos.x += camera.x;
 	pos.y += camera.y;
 
@@ -131,25 +122,29 @@ bool Game::run() {
 void Game::init() {
 
 
-
+    // initialize the sdl wideo drivers
     if (SDL_Init (SDL_INIT_VIDEO) < 0) {
 	std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n" << std::endl;
 	throw "SDL error";
     }
 
+    // create a window
     gameWindow = SDL_CreateWindow ("game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-				   window_width, window_height, SDL_WINDOW_SHOWN);
+				   window_width_, window_height_, SDL_WINDOW_SHOWN);
     if (gameWindow == NULL) {
 	std::cout << "SDL could not create the window! SDL_Error: " << SDL_GetError() << std::endl;
 	throw "SDL error";
     }
 
+    // create the renderer
     gameRenderer = SDL_CreateRenderer(gameWindow, -1, SDL_RENDERER_ACCELERATED);
     if (gameRenderer == NULL) {
 	std::cout << "SDL couldn't initialize the game renderer! SDL_Error: "
 		  << SDL_GetError() << std::endl;
 	throw "SDL error";
     }
+
+    // set the default params
     SDL_SetRenderDrawColor(gameRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     int img_init_status = IMG_Init(IMG_INIT_PNG);
     if (!img_init_status) {
@@ -159,11 +154,14 @@ void Game::init() {
 }
 
 void Game::load_resources() {
-    b2Vec2 gravity(0.0f, 9.8f);
-    world = new b2World(gravity);
+    b2Vec2 gravity(0.0f, 9.8f); // word gravity
+    world = new b2World(gravity); // create the world
+
+    // the custom contact listener
     ContactListener* contactListener = new ContactListener();
     world->SetContactListener(contactListener);
 
+    // load the textures for all entities
     if (!resources_loaded_) {
 	tinydir_dir dir;
 	tinydir_open(&dir, "resources/");
@@ -187,8 +185,9 @@ void Game::load_resources() {
 
     l.setPlayerObj(new Player(world, "player", b2Vec2(60, 20), b2Vec2(32, 32), 1, 0.0, 0, 3, 5));
 
+    // instantiate the level creatures
     GameBody* g;
-    g = new Enemy(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32), 1, 0.3, 0.0, 100, 5);
+    g = new Enemy(world, "simple", b2Vec2(20, 20), b2Vec2(32, 32), 1, 0.3, 1.0, 100, 5);
     l.addObject("box", g);
 
     g = new GameBody(world, "simple", b2Vec2(0, 250), b2Vec2(250, 32));
@@ -203,6 +202,6 @@ void Game::load_resources() {
 
 }
 
- bool Game::triggerLoadLevel(std::string to) {
+bool Game::triggerLoadLevel(std::string to) {
      level_to_ = to;
  }

@@ -83,14 +83,10 @@ std::string GameBody::GetType() {
     return "object";
 }
 
-void GameBody::HandleCollision(std::string other) {
-
-}
+void GameBody::HandleCollision(std::string other) {}
 
 const bool GameBody::isDead() const noexcept {
     return dead_;
 }
 
-bool GameBody::Die() noexcept {
-
-}
+bool GameBody::Die() noexcept {}
